@@ -1,0 +1,24 @@
+{
+  "name": "ai-based-traffic-management-system",
+  "version": "1.0.0",
+  "description": "## 🚦 Project Overview The **AI-Based Traffic Management System** leverages image processing and artificial intelligence to optimize traffic signals and suggest efficient paths based on real-time traffic conditions. This project aims to reduce traffic congestion, minimize waiting times at intersections, and provide an optimized route for vehicles.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vans-aj/AI-Based-Traffic-Management-System.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vans-aj/AI-Based-Traffic-Management-System/issues"
+  },
+  "homepage": "https://github.com/vans-aj/AI-Based-Traffic-Management-System#readme",
+  "dependencies": {
+    "ejs": "^3.1.10",
+    "express": "^5.1.0"
+  }
+}
