@@ -1,14 +1,60 @@
-<!-- in this doucment i will merger google map api and in another file i will write dijekstra's
- algorithm for finding optimum route in google map api i want just traffic detail and 
- distatnce and based on that we will show a optimum path
--->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Traffic manager</title>
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD-XaOjYU-WExPr6oyo8RTmCtx1Szy6aRc&callback=initMap&libraries=visualization"
+      async
+      defer
+    ></script>
 </head>
 <body>
+  <h1>Ye rha tumhara route :</h1>
+  <input type="text" id="start" placeholder="Enter start location" />
+  <input type="text" id="end" placeholder="Enter destination" />
+  <button onclick="calculateRoute()">Get Route</button>
+  <div id="map" style="height: 500px; width: 100%;"></div>
+  <script>
+    let map, directionsService, directionsRenderer;
+
+    function initMap() {
+      const center = { lat: 28.6139, lng: 77.2090 }; // Default: Delhi
+
+      map = new google.maps.Map(document.getElementById("map"), {
+        zoom: 12,
+        center: center,
+      });
+
+      directionsService = new google.maps.DirectionsService();
+      directionsRenderer = new google.maps.DirectionsRenderer();
+      directionsRenderer.setMap(map);
+    }
+
+    function calculateRoute() {
+      const start = document.getElementById("start").value;
+      const end = document.getElementById("end").value;
+
+      const request = {
+        origin: start,
+        destination: end,
+        travelMode: google.maps.TravelMode.DRIVING,
+      };
+
+      directionsService.route(request, (result, status) => {
+        if (status === "OK") {
+          directionsRenderer.setDirections(result);
+          const leg = result.routes[0].legs[0];
+          console.log("Distance:", leg.distance.text);
+          console.log("Duration:", leg.duration.text);
+        } else {
+          alert("Could not find route: " + status);
+        }
+      });
+    }
+
+    window.initMap = initMap;
+  </script>
 </body>
 </html>
