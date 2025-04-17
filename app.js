@@ -4,7 +4,7 @@ const port = 8080;
 const app = express();
 const dijkstra = require('./utility/dijkstra.js');
 const googleMapsClient = require('@google/maps').createClient({
-  key: 'AIzaSyD-XaOjYU-WExPr6oyo8RTmCtx1Szy6aRc'
+  key: '#'
 });
 
 const locations = [
