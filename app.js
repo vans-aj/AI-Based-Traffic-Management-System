@@ -4,19 +4,15 @@ const port = 8080;
 const app = express();
 const dijkstra = require('./utility/dijkstra.js');
 const googleMapsClient = require('@google/maps').createClient({
-<<<<<<< HEAD
-  key: '#'
-=======
   key: 'AIzaSyBEZA6PUdw8jk8-u0kVyhGIsh1F3LSSkT4'
->>>>>>> dd31673 (80% done)
 });
 
 const locations = [
-    "Clock Tower",
-    "ISBT (Inter-State Bus Terminal) Dehradun",
-    "Rajpur Road",
-    "Pacific Mall",
-    "Clement Town"
+  "Clock Tower, Dehradun, Uttarakhand",
+  "ISBT (Inter-State Bus Terminal) Dehradun, Dehradun, Uttarakhand",
+  "Rajpur Road, Dehradun, Uttarakhand",
+  "Pacific Mall, Dehradun, Uttarakhand",
+  "Clement Town, Dehradun, Uttarakhand"
 ];
 
 app.get('/calculate-distances', (req, res) => {
@@ -24,38 +20,50 @@ app.get('/calculate-distances', (req, res) => {
   const end = req.query.end;
 
   if (!start || !end) {
-    return res.status(400).send("Start and end locations must be provided.");
+    return res.status(400).json({ error: "Start and end locations must be provided." });
   }
 
   googleMapsClient.distanceMatrix({
     origins: locations,
     destinations: locations,
     mode: 'driving',
-    departure_time: 'now',
   }, (err, response) => {
     if (!err) {
       const distances = response.json.rows;
       const graph = {};
 
+      // Construct the graph from the Distance Matrix API response
       distances.forEach((row, i) => {
         const origin = locations[i];
         graph[origin] = {};
 
         row.elements.forEach((element, j) => {
           const destination = locations[j];
-          graph[origin][destination] = element.distance.value; // distance in meters
+          if (element.status === "OK") {
+            graph[origin][destination] = element.distance.value; // Distance in meters
+          }
         });
       });
 
+      console.log("Graph constructed for Dijkstra's algorithm:", JSON.stringify(graph, null, 2));
+
+      // Apply Dijkstra algorithm
       const { distances: dist, paths } = dijkstra(graph, start);
+
+      console.log("Dijkstra output - distances:", dist);
+      console.log("Dijkstra output - paths:", paths);
+
       const pathToEnd = paths[end] || [];
-      res.render('calculate-distances', { start, end, distances: dist, pathToEnd });
+
+      // Return the shortest path and distances as JSON
+      res.json({ start, end, distances: dist, pathToEnd });
     } else {
-      console.log('Error fetching distance data:', err);
-      res.status(500).send("Error fetching distance data.");
+      console.error('Error fetching distance data:', err);
+      res.status(500).json({ error: "Error fetching distance data." });
     }
   });
 });
+
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);

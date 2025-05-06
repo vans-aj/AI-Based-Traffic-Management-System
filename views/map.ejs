@@ -17,36 +17,82 @@
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBEZA6PUdw8jk8-u0kVyhGIsh1F3LSSkT4"></script>
 </head>
 <body>
-    <form action="/calculate-distances" method="get" target="_self">
+    <form id="routeForm">
         <label for="start">Start Location:</label>
         <select name="start" id="start">
-            <option>Clock Tower</option>
-            <option>ISBT (Inter-State Bus Terminal) Dehradun</option>
-            <option>Rajpur Road</option>
-            <option>Pacific Mall</option>
-            <option>Clement Town</option>
+            <option>Clock Tower, Dehradun, Uttarakhand</option>
+            <option>ISBT (Inter-State Bus Terminal) Dehradun, Dehradun, Uttarakhand</option>
+            <option>Rajpur Road, Dehradun, Uttarakhand</option>
+            <option>Pacific Mall, Dehradun, Uttarakhand</option>
+            <option>Clement Town, Dehradun, Uttarakhand</option>
         </select>
         <label for="end">End Location:</label>
         <select name="end" id="end">
-            <option>Clock Tower</option>
-            <option>ISBT (Inter-State Bus Terminal) Dehradun</option>
-            <option>Rajpur Road</option>
-            <option>Pacific Mall</option>
-            <option>Clement Town</option>
+            <option>Clock Tower, Dehradun, Uttarakhand</option>
+            <option>ISBT (Inter-State Bus Terminal) Dehradun, Dehradun, Uttarakhand</option>
+            <option>Rajpur Road, Dehradun, Uttarakhand</option>
+            <option>Pacific Mall, Dehradun, Uttarakhand</option>
+            <option>Clement Town, Dehradun, Uttarakhand</option>
         </select>
-        <button type="submit">Get Shortest Path</button>
+        <button type="button" onclick="fetchShortestPath()">Get Shortest Path</button>
     </form>
 
     <div id="map"></div>
 
     <script>
+        let map, directionsService, directionsRenderer;
+
         function initMap() {
             const center = { lat: 30.3165, lng: 78.0322 }; // Dehradun coordinates
-            const map = new google.maps.Map(document.getElementById('map'), {
+            map = new google.maps.Map(document.getElementById('map'), {
                 zoom: 12,
                 center: center
             });
+            directionsService = new google.maps.DirectionsService();
+            directionsRenderer = new google.maps.DirectionsRenderer();
+            directionsRenderer.setMap(map);
         }
+
+        async function fetchShortestPath() {
+            const start = document.getElementById("start").value;
+            const end = document.getElementById("end").value;
+
+            try {
+                const response = await fetch(`/calculate-distances?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`);
+                if (!response.ok) {
+                    throw new Error("Failed to fetch shortest path");
+                }
+                const data = await response.json();
+                console.log("Shortest path data received from server:", data);
+
+                // Render the shortest path on the map
+                const pathCoordinates = data.pathToEnd.map(location => {
+                    // Replace this with actual coordinates for each location
+                    const coordinates = {
+                        "Clock Tower": { lat: 30.3165, lng: 78.0322 },
+                        "ISBT (Inter-State Bus Terminal) Dehradun": { lat: 30.2849, lng: 78.0744 },
+                        "Rajpur Road": { lat: 30.3450, lng: 78.0488 },
+                        "Pacific Mall": { lat: 30.3255, lng: 78.0412 },
+                        "Clement Town": { lat: 30.2600, lng: 78.0890 }
+                    };
+                    return coordinates[location];
+                });
+
+                const path = new google.maps.Polyline({
+                    path: pathCoordinates,
+                    geodesic: true,
+                    strokeColor: "#FF0000",
+                    strokeOpacity: 1.0,
+                    strokeWeight: 2,
+                });
+
+                path.setMap(map);
+            } catch (error) {
+                console.error(error);
+                alert("Could not fetch the shortest path. Please try again.");
+            }
+        }
+
         window.onload = initMap;
     </script>
 </body>
