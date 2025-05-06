@@ -4,7 +4,11 @@ const port = 8080;
 const app = express();
 const dijkstra = require('./utility/dijkstra.js');
 const googleMapsClient = require('@google/maps').createClient({
+<<<<<<< HEAD
   key: '#'
+=======
+  key: 'AIzaSyBEZA6PUdw8jk8-u0kVyhGIsh1F3LSSkT4'
+>>>>>>> dd31673 (80% done)
 });
 
 const locations = [
@@ -16,6 +20,13 @@ const locations = [
 ];
 
 app.get('/calculate-distances', (req, res) => {
+  const start = req.query.start;
+  const end = req.query.end;
+
+  if (!start || !end) {
+    return res.status(400).send("Start and end locations must be provided.");
+  }
+
   googleMapsClient.distanceMatrix({
     origins: locations,
     destinations: locations,
@@ -36,9 +47,9 @@ app.get('/calculate-distances', (req, res) => {
         });
       });
 
-      const start = req.query.start || "Clock Tower";
-      const shortestPaths = dijkstra(graph, start);
-      res.render('calculate-distances', { start, shortestPaths });
+      const { distances: dist, paths } = dijkstra(graph, start);
+      const pathToEnd = paths[end] || [];
+      res.render('calculate-distances', { start, end, distances: dist, pathToEnd });
     } else {
       console.log('Error fetching distance data:', err);
       res.status(500).send("Error fetching distance data.");
@@ -57,6 +68,7 @@ app.get('/', (req, res) => {
 }
 );
 app.get('/map', (req, res) => {
-    res.render('map');
+    const { start, end } = req.query;
+    res.render('map', { start, end });
 }
 );

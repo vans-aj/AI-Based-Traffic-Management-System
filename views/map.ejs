@@ -1,60 +1,53 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Traffic manager</title>
-    <script
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD-XaOjYU-WExPr6oyo8RTmCtx1Szy6aRc&callback=initMap&libraries=visualization"
-      async
-      defer
-    ></script>
+    <title>Map Route</title>
+    <style>
+        #map {
+            height: 500px;
+            width: 80%;
+            margin: auto;
+            margin-top: 20px;
+        }
+        form {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBEZA6PUdw8jk8-u0kVyhGIsh1F3LSSkT4"></script>
 </head>
 <body>
-  <h1>Ye rha tumhara route :</h1>
-  <input type="text" id="start" placeholder="Enter start location" />
-  <input type="text" id="end" placeholder="Enter destination" />
-  <button onclick="calculateRoute()">Get Route</button>
-  <div id="map" style="height: 500px; width: 100%;"></div>
-  <script>
-    let map, directionsService, directionsRenderer;
+    <form action="/calculate-distances" method="get" target="_self">
+        <label for="start">Start Location:</label>
+        <select name="start" id="start">
+            <option>Clock Tower</option>
+            <option>ISBT (Inter-State Bus Terminal) Dehradun</option>
+            <option>Rajpur Road</option>
+            <option>Pacific Mall</option>
+            <option>Clement Town</option>
+        </select>
+        <label for="end">End Location:</label>
+        <select name="end" id="end">
+            <option>Clock Tower</option>
+            <option>ISBT (Inter-State Bus Terminal) Dehradun</option>
+            <option>Rajpur Road</option>
+            <option>Pacific Mall</option>
+            <option>Clement Town</option>
+        </select>
+        <button type="submit">Get Shortest Path</button>
+    </form>
 
-    function initMap() {
-      const center = { lat: 28.6139, lng: 77.2090 }; // Default: Delhi
+    <div id="map"></div>
 
-      map = new google.maps.Map(document.getElementById("map"), {
-        zoom: 12,
-        center: center,
-      });
-
-      directionsService = new google.maps.DirectionsService();
-      directionsRenderer = new google.maps.DirectionsRenderer();
-      directionsRenderer.setMap(map);
-    }
-
-    function calculateRoute() {
-      const start = document.getElementById("start").value;
-      const end = document.getElementById("end").value;
-
-      const request = {
-        origin: start,
-        destination: end,
-        travelMode: google.maps.TravelMode.DRIVING,
-      };
-
-      directionsService.route(request, (result, status) => {
-        if (status === "OK") {
-          directionsRenderer.setDirections(result);
-          const leg = result.routes[0].legs[0];
-          console.log("Distance:", leg.distance.text);
-          console.log("Duration:", leg.duration.text);
-        } else {
-          alert("Could not find route: " + status);
+    <script>
+        function initMap() {
+            const center = { lat: 30.3165, lng: 78.0322 }; // Dehradun coordinates
+            const map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 12,
+                center: center
+            });
         }
-      });
-    }
-
-    window.initMap = initMap;
-  </script>
+        window.onload = initMap;
+    </script>
 </body>
 </html>

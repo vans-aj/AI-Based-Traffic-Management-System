@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Shortest Distances</title>
+    <style>
+        table {
+            width: 50%;
+            margin: 20px auto;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h2 style="text-align: center;">Shortest Distances from <%= start %></h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Destination</th>
+                <th>Distance (meters)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% for (let destination in distances) { %>
+                <tr>
+                    <td><%= destination %></td>
+                    <td><%= distances[destination] %></td>
+                </tr>
+            <% } %>
+        </tbody>
+    </table>
+
+    <% if (end && pathToEnd.length > 0) { %>
+        <h3 style="text-align: center;">Shortest Path from <%= start %> to <%= end %>:</h3>
+        <p style="text-align: center;">
+            <%= pathToEnd.join(' → ') %>
+        </p>
+    <% } %>
+</body>
+</html>
