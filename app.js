@@ -62,13 +62,17 @@ const locations = {
 
 
 app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
+  console.log(`Server is running on port ${port}`);
 }
 );
 app.set('view engine', 'ejs');
 // for home route
 app.get('/', (req, res) => {
-    res.render('home');
+    res.render('home1');
+}
+);
+app.get('/aboutus', (req, res) => {
+    res.render('aboutus');
 }
 );
 app.get('/map', async (req, res) => {

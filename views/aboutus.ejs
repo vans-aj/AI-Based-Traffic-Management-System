@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Traffic Management System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2a3f54;
+            --secondary-color: #1abb9c;
+            --accent-color: #34495e;
+            --light-color: #f7f7f7;
+            --text-color: #333;
+            --card-bg: #ffffff;
+            --primary-blue: #3498db;
+            --dark-blue: #2980b9;
+            --light-gray: #f5f7fa;
+            --medium-gray: #e0e5ec;
+            --dark-gray: #7f8c8d;
+            --shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .project-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .subject-title {
+            font-size: 1.3rem;
+            color: var(--accent-color);
+            font-weight: 500;
+            margin-bottom: 30px;
+            display: inline-block;
+            padding: 8px 20px;
+            background-color: rgba(42, 63, 84, 0.1);
+            border-radius: 20px;
+        }
+
+        .team-section, .motivation-section {
+            margin-bottom: 50px;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            margin-bottom: 25px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background-color: var(--secondary-color);
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        .btn-primary {
+            background: var(--primary-blue);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-secondary {
+            background: var(--light-gray);
+            color: var(--primary-blue);
+            border: 2px solid var(--primary-blue);
+            padding: 12px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+            background: var(--dark-blue);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .team-name {
+            font-size: 1.4rem;
+            color: var(--accent-color);
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .member-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .member-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        .member-photo {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            border-bottom: 1px solid #eee;
+        }
+
+        .member-info {
+            padding: 20px;
+        }
+
+        .member-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+
+        .member-role {
+            font-size: 0.85rem;
+            color: var(--secondary-color);
+            font-weight: 500;
+            margin-bottom: 15px;
+            display: inline-block;
+            background-color: rgba(26, 187, 156, 0.1);
+            padding: 3px 10px;
+            border-radius: 15px;
+        }
+
+        .member-detail {
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            color: var(--accent-color);
+        }
+
+        .member-detail span {
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        .motivation-content {
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            line-height: 1.8;
+        }
+
+        .motivation-content p {
+            margin-bottom: 20px;
+            font-size: 1.05rem;
+        }
+
+        @media (max-width: 768px) {
+            .project-title {
+                font-size: 2rem;
+            }
+            
+            .subject-title {
+                font-size: 1.1rem;
+            }
+            
+            .section-title {
+                font-size: 1.5rem;
+            }
+            
+            .team-grid {
+                grid-template-columns: 1fr;
+            }
+            .auth-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn-primary, .btn-secondary {
+                width: 100%;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .project-title {
+                font-size: 1.8rem;
+            }
+            
+            .motivation-content {
+                padding: 20px;
+            }
+            
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <section class="team-section">
+            <h2 class="section-title">Team Information</h2>
+            <div class="team-name">Team Skywalkers</div>
+            <div class="team-grid" style="display: flex; flex-wrap: wrap; gap: 30px; justify-content: center; margin-top: 20px;">
+                <!-- Member 1 -->
+                <div class="member-card" style="flex: 1 1 320px; max-width: 340px; min-width: 260px;">
+                    <img src="/Images/vansaj.png" alt="vansaj" class="member-photo">
+                    <div class="member-info">
+                        <h3 class="member-name">Vansaj Rawat</h3>
+                        <div class="member-role" style="background-color: #1976d2; color: #fff; font-weight: 600; letter-spacing: 1px;">Team Lead</div>
+                        <p class="member-detail"><span>Student ID:</span> 23011126</p>
+                        <p class="member-detail"><span>Email:</span> vnshajrawat951@gmail.com</p>
+                        <p class="member-detail"><span>Phone:</span>7668667471</p>
+                        <div style="margin-top: 10px;">
+                            <a href="https://linkedin.com/in/your-linkedin" target="_blank" style="color:#1976d2; margin-right:10px;">
+                                <i class="fab fa-linkedin fa-lg"></i>
+                            </a>
+                            <a href="https://github.com/your-github" target="_blank" style="color:#222;">
+                                <i class="fab fa-github fa-lg"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Member 2 -->
+                <div class="member-card" style="flex: 1 1 320px; max-width: 340px; min-width: 260px;">
+                    <img src="" alt="Mansi" class="member-photo">
+                    <div class="member-info">
+                        <h3 class="member-name">Mansi Darmwal</h3>
+                        <div class="member-role">Member</div>
+                        <p class="member-detail"><span>Student ID:</span> 230122248</p>
+                        <p class="member-detail"><span>Email:</span> darmwalmansi19@gmail.com</p>
+                        <p class="member-detail"><span>Phone:</span> 7818986169</p>
+                        <div style="margin-top: 10px;">
+                            <a href="https://linkedin.com/in/your-linkedin" target="_blank" style="color:#1976d2; margin-right:10px;">
+                                <i class="fab fa-linkedin fa-lg"></i>
+                            </a>
+                            <a href="https://github.com/your-github" target="_blank" style="color:#222;">
+                                <i class="fab fa-github fa-lg"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BREAK LINE: Next row -->
+                <div style="flex-basis: 100%; height: 0;"></div>
+                
+                <!-- Member 3 -->
+                <div class="member-card" style="flex: 1 1 320px; max-width: 340px; min-width: 260px;">
+                    <img src="" alt="Anuj" class="member-photo">
+                    <div class="member-info">
+                        <h3 class="member-name">Anuj Dobhal</h3>
+                        <div class="member-role">Member</div>
+                        <p class="member-detail"><span>Student ID:</span> 23011968</p>
+                        <p class="member-detail"><span>Email:</span> anujdobhal2005@gmil.com</p>
+                        <p class="member-detail"><span>Phone:</span> 8791700473</p>
+                        <div style="margin-top: 10px;">
+                            <a href="https://linkedin.com/in/your-linkedin" target="_blank" style="color:#1976d2; margin-right:10px;">
+                                <i class="fab fa-linkedin fa-lg"></i>
+                            </a>
+                            <a href="https://github.com/your-github" target="_blank" style="color:#222;">
+                                <i class="fab fa-github fa-lg"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Member 4 -->
+                <div class="member-card" style="flex: 1 1 320px; max-width: 340px; min-width: 260px;">
+                    <img src="" alt="Kritika" class="member-photo">
+                    <div class="member-info">
+                        <h3 class="member-name">Kritika Basera</h3>
+                        <div class="member-role">Member</div>
+                        <p class="member-detail"><span>Student ID:</span>  23012934 </p>
+                        <p class="member-detail"><span>Email:</span> kritikabasera30@gmail.com </p>
+                        <p class="member-detail"><span>Phone:</span> 8979480182 </p>
+                        <div style="margin-top: 10px;">
+                            <a href="https://linkedin.com/in/your-linkedin" target="_blank" style="color:#1976d2; margin-right:10px;">
+                                <i class="fab fa-linkedin fa-lg"></i>
+                            </a>
+                            <a href="https://github.com/your-github" target="_blank" style="color:#222;">
+                                <i class="fab fa-github fa-lg"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BREAK LINE: Next row for Mentor -->
+                <div style="flex-basis: 100%; height: 0;"></div>
+
+                <!-- Mentor Card -->
+                <div class="member-card" style="flex: 1 1 340px; max-width: 360px; min-width: 260px; border: 2.5px solid #ffe082; box-shadow: 0 8px 32px rgba(255,224,130,0.18); transform: scale(1.05); background: linear-gradient(135deg, #fffbe6 70%, #fffde7 100%); margin-top: 10px;">
+                    <img src="" alt="Ayush Kumar" class="member-photo" style="object-fit: contain; background: #fffde7;">
+                    <div class="member-info">
+                        <h3 class="member-name" style="color: #bfa100;">Mr. Ayush Kumar</h3>
+                        <div class="member-role" style="background-color: #ffe082; color: #bfa100; font-weight: 700; font-size: 1.05rem; letter-spacing: 1px; box-shadow: 0 2px 8px #ffe08255;">Mentor</div>
+                        <p class="member-detail"><span>Email:</span> ayush.kumar@example.com</p>
+                        <p class="member-detail"><span>Phone:</span> 9876543210</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="motivation-section">
+            <h2 class="section-title">Motivation</h2>
+            <div class="motivation-content">
+            </div>
+        </section>
+        
+    </div>
+</body>
+</html>
