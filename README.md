@@ -1,53 +1,58 @@
-# AI-Based Traffic Management System
+🚦 Smart Traffic Management System
 
-## 🚦 Project Overview
-The **AI-Based Traffic Management System** leverages image processing and artificial intelligence to optimize traffic signals and suggest efficient paths based on real-time traffic conditions. This project aims to reduce traffic congestion, minimize waiting times at intersections, and provide an optimized route for vehicles.
+📍 Overview
 
-## 📌 Key Features
-- **Image Processing:** Uses cameras to capture real-time traffic data and analyze the number of vehicles on each road.
-- **Traffic Signal Optimization:** Dynamically adjusts traffic signal timings based on traffic density.
-- **Optimized Path Suggestion:** Utilizes **Dijkstra's Algorithm** to recommend the fastest routes by analyzing traffic weights at each intersection.
-- **Lane-Specific Control:** Manages traffic lights separately for each lane at an intersection to enhance traffic flow.
-- **Scalability:** Designed to be scalable for managing multiple intersections simultaneously.
+The Smart Traffic Management System is a web-based application designed to help reduce traffic congestion by providing users with real-time, optimized route suggestions based on current traffic conditions. By integrating Google Maps APIs and intelligent route analysis, the system aims to improve travel efficiency, reduce waiting times, and assist in smart urban mobility.
 
-## 🛠️ Technologies Used
-- **Programming Language:** C++ for core logic and algorithms.
-- **Image Processing:** OpenCV or TensorFlow for real-time vehicle detection and counting.
-- **Algorithms:** **Dijkstra's Algorithm** for path optimization and priority queues for signal management.
-- **AI Models:** YOLO (You Only Look Once) for object detection.
+🌟 Key Features
+	•	🔍 Smart ETA: Displays both normal and traffic-adjusted Estimated Time of Arrival (ETA).
+	•	🗺️ Interactive Map: Embedded Google Maps to visualize real-time routes and traffic conditions.
+	•	🚗 Live Route Suggestions: Suggests optimal routes using traffic-aware data from Google Directions API.
+	•	📱 Responsive Design: Works smoothly across mobile, tablet, and desktop screens.
+	•	⚙️ Modular Architecture: Easily extendable for future features like heatmaps or traffic signal simulation.
 
-## 📊 System Architecture
-1. **Traffic Data Collection:** Cameras capture live traffic feeds at each intersection.
-2. **Image Processing:** 
-   - Detects the number of vehicles per lane using a pre-trained YOLO model.
-   - Assigns weights to each road based on vehicle count.
-3. **Signal Optimization:** 
-   - Dynamically adjusts traffic light durations based on traffic density.
-   - Manages signals individually for each lane at an intersection.
-4. **Path Optimization:**
-   - Uses **Dijkstra's Algorithm** to suggest the shortest and least congested paths based on real-time traffic data.
+🛠️ Technologies Used
+	•	Frontend: HTML, CSS, EJS
+	•	Backend: Node.js, Express.js
+	•	APIs: Google Maps JavaScript API, Google Directions API
+	•	HTTP Client: Axios
 
-## 🔄 How It Works
-1. **Capture traffic data** using image processing.
-2. **Analyze vehicle density** to assign weights to roads.
-3. **Adjust traffic lights** based on real-time traffic using priority queues.
-4. **Suggest optimized paths** using **Dijkstra's Algorithm** for shortest pathfinding.
+🧠 How It Works
+	1.	User inputs origin and destination.
+	2.	The system fetches route and ETA data from the Google Directions API.
+	3.	Both Normal ETA and Smart ETA (adjusted for traffic) are displayed.
+	4.	The map updates visually to reflect the current best route.
 
-## 🚀 Future Enhancements
-- Integration of **machine learning** for better traffic prediction.
-- Support for **emergency vehicle prioritization**.
-- Mobile application for **live traffic updates** and optimized path suggestions.
+📈 Future Enhancements
+	•	🚨 Traffic incident alerts and user reporting
+	•	🌐 Real-time traffic heatmaps
+	•	🚦 Smart traffic signal simulation
+	•	🚑 Emergency vehicle route prioritization
 
-## 🤝 Contributing
-- Fork the repository.
-- Create a new branch (`git checkout -b feature/your-feature`).
-- Commit your changes (`git commit -m 'Add your feature'`).
-- Push to the branch (`git push origin feature/your-feature`).
-- Open a pull request.
+ ├── views/
+│   └── home.ejs        # Frontend template
+├── public/             # Static assets (CSS, JS, images)
+├── server.js           # Main backend logic
+├── routes/             # API endpoints
+└── README.md
 
-## 📄 License
-This project is licensed under the **MIT License**.
+git clone https://github.com/your-username/smart-traffic-management.git
+npm install
+node server.js	5.	Visit: http://localhost:3000
 
----
+🤝 Contributing
 
-**Developed by Vansaj Rawat**
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+
+📄 License
+
+This project is licensed under the MIT License.
+
+⸻
+
+Developed by Vansaj Rawat
+Feel free to connect on LinkedIn
+
+⸻
+
+Let me know if you’d like a version with badges or a deployment link section!
