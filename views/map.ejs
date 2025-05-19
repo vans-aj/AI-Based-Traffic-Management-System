@@ -1,152 +1,596 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Map Route</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safe Route Finder</title>
+    <script
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCef1jtv8k8NJ4eURMh8vnjC-eCEcV0zwk&callback=initMap"
+        async
+        defer
+        ></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        #map {
-            height: 500px;
-            width: 80%;
-            margin: auto;
-            margin-top: 20px;
+        :root {
+            --primary-blue: #3498db;
+            --dark-blue: #2980b9;
+            --light-gray: #f5f7fa;
+            --medium-gray: #e0e5ec;
+            --dark-gray: #7f8c8d;
+            --text-color: #2c3e50;
+            --shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
         }
-        form {
-            text-align: center;
-            margin-top: 20px;
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #e0f7fa, #bbdefb);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            /* align-items: center; */
+            align-items: stretch;
+            padding: 20px;
+            color: var(--text-color);
+        }
+
+        .container {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            gap: 20px;
+            align-items: stretch;
+        }
+
+        .route-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            width: 100%;
+            height: 100%;
+            display: flex;
+            gap: 0;
+        }
+
+        .form-section {
+            flex: 0 0 30%;
+            height: 100%;
+            overflow-y: auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            padding: 40px;
+        }
+
+        .app-title {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            color: var(--primary-blue);
+            font-weight: 600;
+        }
+
+        .app-tagline {
+            font-size: 1rem;
+            color: var(--dark-gray);
+            margin-bottom: 30px;
+            font-weight: 400;
+        }
+
+        .route-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary-blue);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 15px 15px 15px 45px;
+            border: 2px solid var(--medium-gray);
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+
+        .form-input::placeholder {
+            color: var(--dark-gray);
+            opacity: 0.7;
+        }
+
+        .submit-btn {
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .submit-btn:hover {
+            background: var(--dark-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(41, 128, 185, 0.3);
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            text-align: left;
+            padding-left: 10px;
+            display: none;
+        }
+
+        .map-section {
+            flex: 1;
+            height: 100%;
+            background: #e0e5ec;
+            position: relative;
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+
+        .route-info {
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+            max-width: 300px;
+        }
+
+        .route-info h3 {
+            margin-bottom: 10px;
+            color: var(--primary-blue);
+        }
+
+        .route-info p {
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            .route-card {
+                flex-direction: column;
+            }
+            .app-title {
+                font-size: 1.8rem;
+            }
+            .form-section {
+                padding: 30px;
+                max-width: 100%;
+            }
+            .map-section {
+                height: 350px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .app-title {
+                font-size: 1.5rem;
+            }
+            .form-section {
+                padding: 25px;
+            }
+            .form-input {
+                padding: 12px 12px 12px 40px;
+            }
+            .map-section {
+                height: 300px;
+            }
+            .route-info {
+                max-width: 200px;
+                padding: 15px;
+                bottom: 10px;
+                left: 10px;
+            }
         }
     </style>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBEZA6PUdw8jk8-u0kVyhGIsh1F3LSSkT4"></script>
-    <link rel="stylesheet" href="/style/styles.css">
 </head>
 <body>
-    <form id="routeForm">
-        <label for="start">Start Location:</label>
-        <select name="start" id="start">
-            <option>Clock Tower, Dehradun, Uttarakhand</option>
-            <option>ISBT (Inter-State Bus Terminal) Dehradun, Dehradun, Uttarakhand</option>
-            <option>Rajpur Road, Dehradun, Uttarakhand</option>
-            <option>Pacific Mall, Dehradun, Uttarakhand</option>
-            <option>Clement Town, Dehradun, Uttarakhand</option>
-        </select>
-        <label for="end">End Location:</label>
-        <select name="end" id="end">
-            <option>Clock Tower, Dehradun, Uttarakhand</option>
-            <option>ISBT (Inter-State Bus Terminal) Dehradun, Dehradun, Uttarakhand</option>
-            <option>Rajpur Road, Dehradun, Uttarakhand</option>
-            <option>Pacific Mall, Dehradun, Uttarakhand</option>
-            <option>Clement Town, Dehradun, Uttarakhand</option>
-        </select>
-        <button type="button" onclick="fetchShortestPath()">Get Shortest Path</button>
-    </form>
+    <div class="container">
+        <div class="route-card">
+            <div class="form-section">
+                <h1 class="app-title">Find the shortest path</h1>
+                <p class="app-tagline">Plan your journey with us</p>
+                <form class="route-form" id="routeForm">
+                    <div class="input-group">
+                        <i class="fas fa-map-marker-alt input-icon"></i>
+                        <select class="form-input" id="start">
+                            <% Object.keys(locations).forEach(loc => { %>
+                                <option value="<%= loc %>"><%= loc %></option>
+                            <% }); %>
+                        </select>
+                        <div class="error-message" id="sourceError">Please enter a source location</div>
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-flag-checkered input-icon"></i>
+                        <select class="form-input" id="end">
+                            <% Object.keys(locations).forEach(loc => { %>
+                                <option value="<%= loc %>"><%= loc %></option>
+                            <% }); %>
+                        </select>
+                        <div class="error-message" id="destinationError">Please enter a destination location</div>
+                    </div>
+                    <button type="submit" class="submit-btn" >
+                        <i class="fas fa-route"></i>
+                        Find Route
+                    </button>
+                </form>
+            </div>
+            <div class="map-section">
+                <div id="map"></div>
+                <div class="route-steps" id="routeStepsBox" style="display: none; padding: 15px; background: white; border-radius: 8px; box-shadow: var(--shadow); position: absolute; top: 20px; right: 20px; max-width: 300px; z-index: 1000;">
+                    <h3 style="margin-bottom: 10px; color: var(--primary-blue); font-size: 1.1rem;">Your Route</h3>
+                    <ul id="textSteps" style="font-size: 0.9rem; padding-left: 18px;"></ul>
+                </div>
+                <div class="route-info" id="routeInfo" style="display: none;">
+                    <h3>Route Information</h3>
+                    <p><strong>Distance:</strong> <span id="routeDistance">-</span></p>
+                    <p><strong>Duration:</strong> <span id="routeDuration">-</span></p>
+                    <p><strong>Path:</strong></p>
+                    <ul id="pathSteps" style="font-size: 0.85rem; padding-left: 18px;"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <div id="map"></div>
+    <button id="showGraphBtn" style="position: absolute; top: 20px; left: 20px; z-index: 1000; padding: 10px 15px; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer;">Show Graph</button>
+    <button id="hideGraphBtn" style="position: absolute; top: 60px; left: 20px; z-index: 1000; padding: 10px 15px; background: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer; display: none;">Hide Graph</button>
 
     <script>
+        let graphMarkers = [];
+        let graphLines = [];
+
+        function showGraph() {
+            // Add blue markers for each node
+            Object.keys(coordinates).forEach(location => {
+                const marker = new google.maps.Marker({
+                    position: coordinates[location],
+                    map: map,
+                    title: location,
+                    icon: {
+                        url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png",
+                        scaledSize: new google.maps.Size(40, 40)
+                    }
+                });
+                graphMarkers.push(marker);
+            });
+
+            // Add polylines for each edge
+            Object.entries(graph).forEach(([from, neighbors]) => {
+                Object.keys(neighbors).forEach(to => {
+                    const line = new google.maps.Polyline({
+                        path: [coordinates[from], coordinates[to]],
+                        geodesic: true,
+                        strokeColor: "#0000AA",
+                        strokeOpacity: 0.5,
+                        strokeWeight: 1
+                    });
+                    line.setMap(map);
+                    graphLines.push(line);
+                });
+            });
+
+            document.getElementById("showGraphBtn").style.display = "none";
+            document.getElementById("hideGraphBtn").style.display = "inline-block";
+        }
+
+        function hideGraph() {
+            graphMarkers.forEach(marker => marker.setMap(null));
+            graphLines.forEach(line => line.setMap(null));
+            graphMarkers = [];
+            graphLines = [];
+
+            document.getElementById("showGraphBtn").style.display = "inline-block";
+            document.getElementById("hideGraphBtn").style.display = "none";
+        }
         let map, directionsService, directionsRenderer;
+        // Store traffic light markers for later cleanup
+        let trafficMarkers = [];
+        const graph = <%- graph%>;
+        const coordinates = <%- JSON.stringify(locations)%>;
+        let shortestPathPolyline = null; // To store and remove the previous path
 
         function initMap() {
             const center = { lat: 30.3165, lng: 78.0322 }; // Dehradun coordinates
             map = new google.maps.Map(document.getElementById('map'), {
-                zoom: 12,
+                zoom: 14,
                 center: center
             });
             directionsService = new google.maps.DirectionsService();
             directionsRenderer = new google.maps.DirectionsRenderer();
             directionsRenderer.setMap(map);
+            // Object.keys(coordinates).forEach(location => {
+            //     new google.maps.Marker({
+            //         position: coordinates[location],
+            //         map: map,
+            //         title: location,
+            //         icon: {
+            //             url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png", // change this to your custom icon URL
+            //             scaledSize: new google.maps.Size(40, 40) // optional: resize the icon
+            //         },
+            //         animation: google.maps.Animation.DROP // optional: adds drop animation
+            //     });
+            // });
 
-            // Draw all graph edges in blue
-            const coordinates = {
-                "Clock Tower, Dehradun, Uttarakhand": { lat: 30.3165, lng: 78.0322 },
-                "ISBT (Inter-State Bus Terminal) Dehradun, Dehradun, Uttarakhand": { lat: 30.2849, lng: 78.0744 },
-                "Rajpur Road, Dehradun, Uttarakhand": { lat: 30.3450, lng: 78.0488 },
-                "Pacific Mall, Dehradun, Uttarakhand": { lat: 30.3255, lng: 78.0412 },
-                "Clement Town, Dehradun, Uttarakhand": { lat: 30.2600, lng: 78.0890 }
-            };
-
-            Object.keys(coordinates).forEach(location => {
-                new google.maps.Marker({
-                    position: coordinates[location],
-                    map: map,
-                    title: location
-                });
-            });
-
-
-            const graphEdges = [
-                ["Clock Tower, Dehradun, Uttarakhand", "ISBT (Inter-State Bus Terminal) Dehradun, Dehradun, Uttarakhand"],
-                ["Clock Tower, Dehradun, Uttarakhand", "Rajpur Road, Dehradun, Uttarakhand"],
-                ["Clock Tower, Dehradun, Uttarakhand", "Pacific Mall, Dehradun, Uttarakhand"],
-                ["Clock Tower, Dehradun, Uttarakhand", "Clement Town, Dehradun, Uttarakhand"],
-                ["ISBT (Inter-State Bus Terminal) Dehradun, Dehradun, Uttarakhand", "Rajpur Road, Dehradun, Uttarakhand"],
-                ["ISBT (Inter-State Bus Terminal) Dehradun, Dehradun, Uttarakhand", "Pacific Mall, Dehradun, Uttarakhand"],
-                ["ISBT (Inter-State Bus Terminal) Dehradun, Dehradun, Uttarakhand", "Clement Town, Dehradun, Uttarakhand"],
-                ["Rajpur Road, Dehradun, Uttarakhand", "Pacific Mall, Dehradun, Uttarakhand"],
-                ["Rajpur Road, Dehradun, Uttarakhand", "Clement Town, Dehradun, Uttarakhand"],
-                ["Pacific Mall, Dehradun, Uttarakhand", "Clement Town, Dehradun, Uttarakhand"]
-            ];
-
-            graphEdges.forEach(([from, to]) => {
-                const edgePath = new google.maps.Polyline({
-                    path: [coordinates[from], coordinates[to]],
-                    geodesic: true,
-                    strokeColor: "#0000AA",
-                    strokeOpacity: 0.5,
-                    strokeWeight: 1,
-                });
-                edgePath.setMap(map);
-            });
+            // Object.entries(graph).forEach(([from, neighbors]) => {
+            //     Object.keys(neighbors).forEach(to => {
+            //         const distance = graph[from][to]; // Get the distance from the graph
+            //         if (distance <= 2000) { // Check if the distance is within 2km (2000 meters)
+            //             const edgePath = new google.maps.Polyline({
+            //                 path: [coordinates[from], coordinates[to]],
+            //                 geodesic: true,
+            //                 strokeColor: "#0000AA",
+            //                 strokeOpacity: 0.5,
+            //                 strokeWeight: 1,
+            //             });
+            //             edgePath.setMap(map);
+            //         }
+            //     });
+            // });
         }
 
-        async function fetchShortestPath() {
+        function dijkstra(graph, start) {
+            const distances = {};
+            const previous = {};
+            const visited = new Set();
+            const visitOrder = [];
+
+            for (const node in graph) {
+                distances[node] = Infinity;
+                previous[node] = null;
+            }
+            distances[start] = 0;
+
+            while (visited.size < Object.keys(graph).length) {
+                let currentNode = null;
+                let currentDistance = Infinity;
+
+                for (const node in distances) {
+                    if (!visited.has(node) && distances[node] < currentDistance) {
+                        currentNode = node;
+                        currentDistance = distances[node];
+                    }
+                }
+
+                if (currentNode === null) break;
+                visited.add(currentNode);
+                visitOrder.push(currentNode);
+
+                for (const neighbor in graph[currentNode]) {
+                    const newDist = distances[currentNode] + graph[currentNode][neighbor];
+                    if (newDist < distances[neighbor]) {
+                        distances[neighbor] = newDist;
+                        previous[neighbor] = currentNode;
+                    }
+                }
+            }
+
+            return { distances, previous, visitOrder };
+        }
+
+        function reconstructPath(previous, start, end) {
+            const path = [];
+            let current = end;
+            while (current !== null) {
+                path.unshift(current);
+                current = previous[current];
+            }
+            return path[0] === start ? path : [];
+        }
+
+        // Simulated Traffic Signals
+        const signalCycle = { green: 40, red: 30 }; // in seconds
+
+        function getSignalStatus(node) {
+            const cycleLength = signalCycle.green + signalCycle.red;
+            const currentTime = Math.floor(Date.now() / 1000); // current time in seconds
+            const timeInCycle = currentTime % cycleLength;
+            return timeInCycle < signalCycle.green ? "GREEN" : "RED";
+        }
+
+        async function fetchShortestPath(event) {
+            event.preventDefault();
             const start = document.getElementById("start").value;
             const end = document.getElementById("end").value;
+            console.log("fetchShortestPath called");
 
-            try {
-                const response = await fetch(`/calculate-distances?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`);
-                if (!response.ok) {
-                    throw new Error("Failed to fetch shortest path");
-                }
-                const data = await response.json();
-                console.log("Shortest path data received from server:", data);
-
-                // Render the shortest path on the map
-                const coordinates = {
-                    "Clock Tower, Dehradun, Uttarakhand": { lat: 30.3165, lng: 78.0322 },
-                    "ISBT (Inter-State Bus Terminal) Dehradun, Dehradun, Uttarakhand": { lat: 30.2849, lng: 78.0744 },
-                    "Rajpur Road, Dehradun, Uttarakhand": { lat: 30.3450, lng: 78.0488 },
-                    "Pacific Mall, Dehradun, Uttarakhand": { lat: 30.3255, lng: 78.0412 },
-                    "Clement Town, Dehradun, Uttarakhand": { lat: 30.2600, lng: 78.0890 }
-                };
-                const pathCoordinates = data.pathToEnd.map(location => coordinates[location]);
-
-                const path = new google.maps.Polyline({
-                    path: pathCoordinates,
-                    geodesic: true,
-                    strokeColor: "#0000AA", // Darker blue
-                    strokeOpacity: 1.0,
-                    strokeWeight: 2,
-                });
-
-                path.setMap(map);
-
-                // Add markers for the start and end locations
-                const startMarker = new google.maps.Marker({
-                    position: pathCoordinates[0], // Start location
-                    map: map,
-                    title: "Start: " + start
-                });
-
-                const endMarker = new google.maps.Marker({
-                    position: pathCoordinates[pathCoordinates.length - 1], // End location
-                    map: map,
-                    title: "End: " + end
-                });
-            } catch (error) {
-                console.error(error);
-                alert("Could not fetch the shortest path. Please try again.");
+            if (!graph[start] || !graph[end]) {
+                alert("Start or end location not found in graph");
+                return;
             }
+            console.log("Start:", start, "End:", end);
+            // Run Dijkstra
+            const { distances, previous, visitOrder } = dijkstra(graph, start);
+            console.log("Distances:", distances);
+            console.log("Previous map:", previous);
+            const pathToEnd = reconstructPath(previous, start, end);
+            console.log("Path (nodes):", pathToEnd);
+            for (let i = 0; i < pathToEnd.length - 1; i++) {
+                console.log(`From "${pathToEnd[i]}" to "${pathToEnd[i + 1]}"`);
+            }
+            if (pathToEnd.length === 0) {
+                alert("No path found between selected nodes");
+                return;
+            }
+
+            // Visualize Dijkstra traversal
+            async function visualizeTraversal(order) {
+                for (let i = 0; i < order.length; i++) {
+                    const currentNode = order[i];
+                    await new Promise(resolve => setTimeout(resolve, 50)); // reduced delay
+                    new google.maps.Marker({
+                        position: coordinates[currentNode],
+                        map: map,
+                        icon: {
+                            url: "http://maps.google.com/mapfiles/ms/icons/yellow-dot.png",
+                            scaledSize: new google.maps.Size(30, 30)
+                        }
+                    });
+
+                    for (const neighbor in graph[currentNode]) {
+                        const edgeLine = new google.maps.Polyline({
+                            path: [coordinates[currentNode], coordinates[neighbor]],
+                            geodesic: true,
+                            strokeColor: "#8B0000", // light blue
+                            strokeOpacity: 0.4,
+                            strokeWeight: 2,
+                        });
+                        edgeLine.setMap(map);
+                        await new Promise(resolve => setTimeout(resolve, 20)); // reduced edge highlight pause
+                        edgeLine.setMap(null); // remove after flash
+                    }
+                }
+            }
+            await visualizeTraversal(visitOrder);
+
+            console.log("Shortest path through nodes:", pathToEnd);
+            const pathCoordinates = pathToEnd.map(node => coordinates[node]);
+            console.log(pathCoordinates);
+
+            // Show step-by-step path on the UI
+            const pathStepsContainer = document.getElementById("pathSteps");
+            pathStepsContainer.innerHTML = ""; // Clear previous steps
+            for (let i = 0; i < pathToEnd.length - 1; i++) {
+                const li = document.createElement("li");
+                li.textContent = `From "${pathToEnd[i]}" to "${pathToEnd[i + 1]}"`;
+                pathStepsContainer.appendChild(li);
+            }
+
+            // Populate the text steps box (routeStepsBox)
+            const textStepsBox = document.getElementById("routeStepsBox");
+            const textStepsList = document.getElementById("textSteps");
+            textStepsList.innerHTML = ""; // Clear previous text steps
+            for (let i = 0; i < pathToEnd.length - 1; i++) {
+                const fromNode = pathToEnd[i];
+                const toNode = pathToEnd[i + 1];
+                const distance = graph[fromNode][toNode]; // Get the distance from the graph
+                const li = document.createElement("li");
+                li.innerHTML = `From <span style="color: red;">${fromNode}</span> to <span style="color: red;">${toNode}</span> (<span style="color: blue;">${distance} meters</span>)`;
+                textStepsList.appendChild(li);
+            }
+            textStepsBox.style.display = "block";
+
+            // Remove previous shortest path if it exists
+            if (shortestPathPolyline) {
+                shortestPathPolyline.setMap(null); // Remove from map
+            }
+
+            // Draw polyline through each node
+            shortestPathPolyline = new google.maps.Polyline({
+                path: pathCoordinates,
+                geodesic: true,
+                strokeColor: "green",
+                strokeOpacity: 1.0,
+                strokeWeight: 4,
+            });
+            shortestPathPolyline.setMap(map);
+
+            // Clear previous traffic markers before rendering new ones
+            trafficMarkers.forEach(marker => marker.setMap(null));
+            trafficMarkers = [];
+            // Show simulated signal status for each node in the shortest path as a small traffic light marker beside the node
+            pathToEnd.forEach(node => {
+                const signal = getSignalStatus(node);
+                const iconUrl = signal === "GREEN"
+                    ? "https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Traffic_light_green.svg/48px-Traffic_light_green.svg.png"
+                    : "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/Traffic_light_red.svg/48px-Traffic_light_red.svg.png";
+
+                const trafficMarker = new google.maps.Marker({
+                    position: {
+                        lat: coordinates[node].lat,
+                        lng: coordinates[node].lng + 0.0005 // slightly to the right of the node
+                    },
+                    map: map,
+                    icon: {
+                        url: iconUrl,
+                        scaledSize: new google.maps.Size(20, 20)
+                    },
+                    title: `Signal: ${signal}`
+                });
+                trafficMarkers.push(trafficMarker);
+            });
+
+            // Mark all nodes along the path
+            const directionsService = new google.maps.DirectionsService();
+            const directionsRenderer = new google.maps.DirectionsRenderer({ map });
+
+            // Get origin and destination
+            const origin = coordinates[pathToEnd[0]];
+            const destination = coordinates[pathToEnd[pathToEnd.length - 1]];
+
+            // Create waypoints (skip first and last node)
+            const waypoints = pathToEnd.slice(1, -1).map(node => ({
+                location: coordinates[node],
+                stopover: true
+            }));
+
+            // Request directions
+            directionsService.route({
+                origin,
+                destination,
+                waypoints,
+                travelMode: google.maps.TravelMode.DRIVING,
+                optimizeWaypoints: false  // Set true if you want Google to reorder for optimal travel
+            }, (response, status) => {
+                if (status === 'OK') {
+                    directionsRenderer.setDirections(response);
+                } else {
+                    console.error('Directions request failed due to ' + status);
+                }
+            });
         }
 
+
         window.onload = initMap;
+        window.initMap = initMap;
+        document.getElementById("routeForm").addEventListener("submit", fetchShortestPath);
+        document.getElementById("showGraphBtn").addEventListener("click", showGraph);
+        document.getElementById("hideGraphBtn").addEventListener("click", hideGraph);
     </script>
 </body>
 </html>
